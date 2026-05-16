@@ -1,0 +1,13 @@
+.buildozer/
+bin/
+__pycache__/
+*.pyc
+venv/
+*.log
+*.bat
+launch.py
+test_imports.py
+app_output.log
+import_test.log
+run_test.bat
+test_run.bat

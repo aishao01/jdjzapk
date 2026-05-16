@@ -1,0 +1,19 @@
+异常: IndexError: list index out of range
+  File "C:\Users\aisha\Desktop\机械施工记账\debug_run.py", line 12, in <module>
+    app.run()
+  File "C:\Users\aisha\AppData\Roaming\Python\Python312\site-packages\kivy\app.py", line 956, in run
+    runTouchApp()
+  File "C:\Users\aisha\AppData\Roaming\Python\Python312\site-packages\kivy\base.py", line 574, in runTouchApp
+    EventLoop.mainloop()
+  File "C:\Users\aisha\AppData\Roaming\Python\Python312\site-packages\kivy\base.py", line 339, in mainloop
+    self.idle()
+  File "C:\Users\aisha\AppData\Roaming\Python\Python312\site-packages\kivy\base.py", line 400, in idle
+    window.dispatch('on_draw')
+  File "kivy\\_event.pyx", line 731, in kivy._event.EventDispatcher.dispatch
+  File "C:\Users\aisha\AppData\Roaming\Python\Python312\site-packages\kivy\core\window\__init__.py", line 1676, in on_draw
+    self.render_context.draw()
+  File "kivy\\graphics\\instructions.pyx", line 640, in kivy.graphics.instructions.Canvas.draw
+  File "kivy\\graphics\\instructions.pyx", line 643, in kivy.graphics.instructions.Canvas.draw
+  File "kivy\\graphics\\instructions.pyx", line 918, in kivy.graphics.instructions.RenderContext.apply
+  File "kivy\\graphics\\instructions.pyx", line 871, in kivy.graphics.instructions.RenderContext.pop_states
+  File "kivy\\graphics\\instructions.pyx", line 864, in kivy.graphics.instructions.RenderContext.pop_state

@@ -1,0 +1,36 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install buildozer cython==0.29.37
+
+      - name: Build with Buildozer
+        run: |
+          cd $GITHUB_WORKSPACE
+          buildozer android debug
+        env:
+          ANDROID_HOME: /root/android-sdk
+          ANDROID_SDK_ROOT: /root/android-sdk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mechbookkeeping-debug
+          path: ${{ github.workspace }}/bin/*.apk

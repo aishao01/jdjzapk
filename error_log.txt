@@ -1,0 +1,25 @@
+[INFO   ] [Logger      ] Record log in C:\Users\aisha\.kivy\logs\kivy_26-05-15_8.txt
+[INFO   ] [deps        ] Successfully imported "kivy_deps.angle" 0.4.0
+[INFO   ] [deps        ] Successfully imported "kivy_deps.glew" 0.3.1
+[INFO   ] [deps        ] Successfully imported "kivy_deps.sdl2" 0.8.0
+[INFO   ] [Kivy        ] v2.3.1
+[INFO   ] [Kivy        ] Installed at "C:\Users\aisha\AppData\Roaming\Python\Python312\site-packages\kivy\__init__.py"
+[INFO   ] [Python      ] v3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]
+[INFO   ] [Python      ] Interpreter at "C:\Program Files\Python312\python.exe"
+[INFO   ] [Logger      ] Purge log fired. Processing...
+[INFO   ] [Logger      ] Purge finished!
+[INFO   ] [Factory     ] 195 symbols loaded
+[INFO   ] [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil (img_ffpyplayer ignored)
+[INFO   ] [Window      ] Provider: sdl2
+[INFO   ] [Window      ] Activate GLES2/ANGLE context
+[INFO   ] [GL          ] Using the "OpenGL" graphics system
+[INFO   ] [GL          ] Backend used <angle_sdl2>
+[INFO   ] [GL          ] OpenGL version <b'OpenGL ES 3.2 NVIDIA 596.21'>
+[INFO   ] [GL          ] OpenGL vendor <b'NVIDIA Corporation'>
+[INFO   ] [GL          ] OpenGL renderer <b'NVIDIA GeForce RTX 3060/PCIe/SSE2'>
+[INFO   ] [GL          ] OpenGL parsed version: 3, 2
+[INFO   ] [GL          ] Shading version <b'OpenGL ES GLSL ES 3.20'>
+[INFO   ] [GL          ] Texture max size <32768>
+[INFO   ] [GL          ] Texture max units <32>
+[INFO   ] [Window      ] auto add sdl2 input provider
+[INFO   ] [Window      ] virtual keyboard not allowed, single mode, not docked
