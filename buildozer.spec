@@ -39,14 +39,8 @@ android.minapi = 21
 # (str) Android NDK version to use
 android.ndk = 26.1.10909125
 
-# (bool) Copy NDK from local machine
-android.ndk.copy_local_ndk = False
-
-# (bool) Skip installing NDK
-android.skip_ndk_install = True
-
-# (str) Android NDK directory
-android.ndk_path = /home/aisha01/android-sdk/ndk/26.1.10909125
+# (bool) Accept SDK license
+android.accept_sdk_license = True
 
 # (str) Android entry point
 android.entrypoint = org.kivy.android.PythonActivity
