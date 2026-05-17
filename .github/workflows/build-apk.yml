@@ -27,13 +27,10 @@ jobs:
           pip install buildozer cython
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
 
-      - name: Build (two-pass, autofix harfbuzz)
+      - name: Patch p4a and build
         run: |
           cd $GITHUB_WORKSPACE
-          buildozer android debug 2>&1 || true
-          python3 .github/scripts/fix_harfbuzz.py || true
-          find "$(pwd)/.buildozer" -path "*/objs-debug/harfbuzz/*.o" -delete 2>/dev/null || true
-          echo "=== Retry ==="
+          python3 .github/scripts/pre_build.py
           buildozer android debug
         env:
           ANDROID_HOME: /root/android-sdk
