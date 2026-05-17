@@ -14,10 +14,16 @@ for root, dirs, files in os.walk(buildozer_dir):
                 continue
             with open(path) as fh:
                 content = fh.read()
-            if '#pragma clang diagnostic' not in content:
-                pragma = '#pragma clang diagnostic ignored "-Wcast-function-type-strict"\n'
+            if '#pragma' not in content:
+                pragmas = '''#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+#pragma GCC diagnostic ignored "-Wcast-function-type-strict"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wcast-function-type"
+#pragma clang diagnostic ignored "-Wcast-function-type-strict"
+'''
                 with open(path, 'w') as fh:
-                    fh.write(pragma + content)
+                    fh.write(pragmas + content)
                 print(f'Patched: {path}')
                 count += 1
             else:
