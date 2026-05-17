@@ -42,8 +42,8 @@ android.ndk = 28c
 # (bool) Accept SDK license
 android.accept_sdk_license = True
 
-# (str) python-for-android branch
-p4a.branch = develop
+# (str) python-for-android branch or tag
+p4a.branch = v2026.05.09
 
 # (str) Android entry point
 android.entrypoint = org.kivy.android.PythonActivity
