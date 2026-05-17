@@ -18,8 +18,15 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq openjdk-17-jdk \
+            libffi-dev libssl-dev libltdl-dev \
+            autoconf automake libtool pkg-config \
+            libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
           python -m pip install --upgrade pip setuptools wheel
-          pip install buildozer cython==0.29.37
+          pip install buildozer cython
+          # Set Java home
+          echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
 
       - name: Build with Buildozer
         run: |
