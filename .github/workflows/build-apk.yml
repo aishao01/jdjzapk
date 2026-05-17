@@ -27,16 +27,14 @@ jobs:
           pip install buildozer cython
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
 
-      - name: Build (autofix harfbuzz on failure)
+      - name: Build
         run: |
           cd $GITHUB_WORKSPACE
-          # First attempt - will fail at SDL2_ttf harfbuzz
+          # First build - will fail at harfbuzz
           buildozer android debug 2>&1 || true
-
-          # Patch hb-ft.cc to suppress clang cast-function-type-strict
-          echo "=== Patching hb-ft.cc ==="
-          python3 .github/scripts/patch_harfbuzz.py
-          echo "=== Retrying build with patched harfbuzz ==="
+          # Fix harfbuzz C-style casts and retry
+          python3 .github/scripts/fix_harfbuzz.py
+          echo "=== Retrying build ==="
           buildozer android debug
         env:
           ANDROID_HOME: /root/android-sdk
