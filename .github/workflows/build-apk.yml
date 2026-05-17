@@ -26,15 +26,36 @@ jobs:
             libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
           python -m pip install --upgrade pip setuptools wheel
           pip install buildozer cython
-          # Set Java home
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
-          # Suppress strict clang warnings for SDL2_ttf harfbuzz
-          echo "CXXFLAGS=-Wno-cast-function-type-strict" >> $GITHUB_ENV
 
-      - name: Build with Buildozer
+      - name: Build with Buildozer (patch harfbuzz on retry)
         run: |
           cd $GITHUB_WORKSPACE
-          buildozer android debug
+          # First attempt - will likely fail at SDL2_ttf harfbuzz
+          buildozer android debug 2>&1 || true
+          # Patch SDL2_ttf Android.mk to suppress clang cast-function-type error
+          SDL2_TTF_DIR="$HOME/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_ttf"
+          if [ -f "$SDL2_TTF_DIR/Android.mk" ]; then
+            echo "=== Patching SDL2_ttf Android.mk for clang-17 ==="
+            sed -i 's/-Werror/-Werror -Wno-cast-function-type-strict/g' "$SDL2_TTF_DIR/Android.mk"
+            echo "=== Retrying build with patched SDL2_ttf ==="
+            buildozer android debug
+          else
+            echo "=== SDL2_ttf not at expected path, searching... ==="
+            FOUND=$(find "$HOME/.buildozer" -name "hb-ft.cc" 2>/dev/null | head -1)
+            if [ -n "$FOUND" ]; then
+              SDL_DIR=$(dirname "$(dirname "$(dirname "$(dirname "$FOUND")")")")
+              echo "Found SDL2_ttf at: $SDL_DIR"
+              if [ -f "$SDL_DIR/Android.mk" ]; then
+                sed -i 's/-Werror/-Werror -Wno-cast-function-type-strict/g' "$SDL_DIR/Android.mk"
+                echo "=== Retrying build ==="
+                buildozer android debug
+              fi
+            else
+              echo "SDL2_ttf not found. Build may need a clean re-run."
+              exit 1
+            fi
+          fi
         env:
           ANDROID_HOME: /root/android-sdk
           ANDROID_SDK_ROOT: /root/android-sdk
