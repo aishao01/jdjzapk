@@ -1,35 +1,47 @@
 #!/usr/bin/env python3
-"""Patch hb-ft.cc to mark as system header (suppress ALL warnings from this file)."""
-import os
+"""Fix hb-ft.cc: replace C-style FT_Generic_Finalizer casts with reinterpret_cast."""
+import os, re
 
 cwd = os.getcwd()
 count = 0
+
 for root, dirs, files in os.walk(cwd):
     for f in files:
-        if f != 'hb-ft.cc':
+        if f != 'hb-ft.cc' or 'SDL2_ttf' not in root:
             continue
         path = os.path.join(root, f)
-        if 'SDL2_ttf' not in path:
-            continue
-        
         with open(path) as fh:
             content = fh.read()
         
-        if '#pragma' in content or 'system_header' in content:
-            print(f'Already patched: {path}')
+        if 'reinterpret_cast<FT_Generic_Finalizer>' in content:
+            print(f'Already fixed: {path}')
             continue
         
-        # Add system_header pragma at the very top
-        pragma_lines = '''#if defined(__clang__)
-#pragma clang system_header
-#elif defined(__GNUC__) || defined(__GNUG__)
-#pragma GCC system_header
-#endif
+        # Replace C-style (FT_Generic_Finalizer) casts with reinterpret_cast
+        # Pattern: (FT_Generic_Finalizer)(something) or (FT_Generic_Finalizer)something
+        new_content = re.sub(
+            r'\(FT_Generic_Finalizer\)\s*\(',
+            'reinterpret_cast<FT_Generic_Finalizer>(',
+            content
+        )
+        new_content = re.sub(
+            r'\(FT_Generic_Finalizer\)(\s*\w+)',
+            r'reinterpret_cast<FT_Generic_Finalizer>(\1)',
+            new_content
+        )
+        # Also handle free cast
+        new_content = re.sub(
+            r'\(FT_Generic_Finalizer\)\s*hb_free',
+            'reinterpret_cast<FT_Generic_Finalizer>(reinterpret_cast<void(*)(void*)>(hb_free))',
+            new_content
+        )
+        
+        if new_content != content:
+            with open(path, 'w') as fh:
+                fh.write(new_content)
+            print(f'Fixed: {path}')
+            count += 1
+        else:
+            print(f'No changes needed: {path}')
 
-'''
-        with open(path, 'w') as fh:
-            fh.write(pragma_lines + content)
-        print(f'Patched: {path}')
-        count += 1
-
-print(f'Total: {count}')
+print(f'Total fixed: {count}')
