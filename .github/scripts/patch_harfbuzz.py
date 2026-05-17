@@ -2,12 +2,16 @@
 """Patch hb-ft.cc in .buildozer to suppress clang cast-function-type-strict errors."""
 import os
 
-buildozer_dir = os.path.expanduser('~/.buildozer')
+buildozer_dir = os.getcwd()
+print(f'Searching in: {buildozer_dir}/.buildozer')
 count = 0
 for root, dirs, files in os.walk(buildozer_dir):
     for f in files:
         if f == 'hb-ft.cc':
             path = os.path.join(root, f)
+            # Skip if not in SDL2_ttf build path
+            if 'SDL2_ttf' not in path:
+                continue
             with open(path) as fh:
                 content = fh.read()
             if '#pragma clang diagnostic' not in content:
