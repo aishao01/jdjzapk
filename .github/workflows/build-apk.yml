@@ -27,23 +27,13 @@ jobs:
           pip install buildozer cython
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
 
-      - name: Build
+      - name: Build (two-pass, autofix harfbuzz)
         run: |
           cd $GITHUB_WORKSPACE
-          # First build - will fail at harfbuzz
           buildozer android debug 2>&1 || true
-          # Fix harfbuzz C-style casts inline and delete objects
-          echo "=== Fixing harfbuzz ==="
-          find "$(pwd)/.buildozer" -name "hb-ft.cc" -path "*SDL2_ttf*" | while read f; do
-            echo "Patching: $f"
-            python3 -c "import re; c=open('$f').read(); \
-              c=re.sub(r'\(FT_Generic_Finalizer\)\s*\(','reinterpret_cast<FT_Generic_Finalizer>(',c); \
-              c=re.sub(r'\(FT_Generic_Finalizer\)\s*hb_free','reinterpret_cast<FT_Generic_Finalizer>(reinterpret_cast<void(*)(void*)>(hb_free))',c); \
-              open('$f','w').write(c)"
-            echo "Done"
-          done
+          python3 .github/scripts/fix_harfbuzz.py || true
           find "$(pwd)/.buildozer" -path "*/objs-debug/harfbuzz/*.o" -delete 2>/dev/null || true
-          echo "=== Retrying build ==="
+          echo "=== Retry ==="
           buildozer android debug
         env:
           ANDROID_HOME: /root/android-sdk
