@@ -19,7 +19,7 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,otf,json
 version = 3.0.0
 
 # (list) Application requirements
-requirements = python3,kivy==2.3.0,openpyxl,fpdf2
+requirements = python3,kivy==2.3.0,sqlite3,pyjnius,android,openpyxl,fpdf2
 
 # (str) Supported orientation
 orientation = portrait
@@ -37,13 +37,13 @@ android.api = 34
 android.minapi = 21
 
 # (str) Android NDK version to use
-android.ndk = 28c
+android.ndk = 25b
 
 # (bool) Accept SDK license
 android.accept_sdk_license = True
 
 # (str) python-for-android branch or tag
-p4a.branch = v2026.05.09
+p4a.branch = v2024.01.21
 
 # (str) Android entry point
 android.entrypoint = org.kivy.android.PythonActivity
