@@ -22,11 +22,14 @@ jobs:
           sudo apt-get install -y -qq openjdk-17-jdk \
             libffi-dev libssl-dev libltdl-dev \
             autoconf automake libtool pkg-config \
+            liblzma-dev libuuid-dev \
             libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
           python -m pip install --upgrade pip setuptools wheel
           pip install buildozer cython
           # Set Java home
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
+          # Suppress strict clang warnings for SDL2_ttf harfbuzz
+          echo "CXXFLAGS=-Wno-cast-function-type-strict" >> $GITHUB_ENV
 
       - name: Build with Buildozer
         run: |
