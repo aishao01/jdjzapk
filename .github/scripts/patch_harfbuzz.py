@@ -1,32 +1,40 @@
 #!/usr/bin/env python3
-"""Patch hb-ft.cc in .buildozer to suppress clang cast-function-type-strict errors."""
-import os
+"""Patch harfbuzz Android.mk to add -Wno-cast-function-type-strict."""
+import os, glob
 
-buildozer_dir = os.getcwd()
-print(f'Searching in: {buildozer_dir}/.buildozer')
-count = 0
-for root, dirs, files in os.walk(buildozer_dir):
+cwd = os.getcwd()
+print(f'Searching in: {cwd}')
+
+for root, dirs, files in os.walk(cwd):
     for f in files:
-        if f == 'hb-ft.cc':
-            path = os.path.join(root, f)
-            # Skip if not in SDL2_ttf build path
-            if 'SDL2_ttf' not in path:
-                continue
-            with open(path) as fh:
-                content = fh.read()
-            if '#pragma' not in content:
-                pragmas = '''#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wcast-function-type"
-#pragma GCC diagnostic ignored "-Wcast-function-type-strict"
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wcast-function-type"
-#pragma clang diagnostic ignored "-Wcast-function-type-strict"
-'''
-                with open(path, 'w') as fh:
-                    fh.write(pragmas + content)
-                print(f'Patched: {path}')
-                count += 1
-            else:
-                print(f'Already patched: {path}')
+        if f != 'Android.mk':
+            continue
+        path = os.path.join(root, f)
+        if 'harfbuzz' not in path and 'SDL2_ttf' not in path:
+            continue
+        
+        with open(path) as fh:
+            content = fh.read()
+        
+        if 'Wno-cast-function-type-strict' in content:
+            print(f'Already patched: {path}')
+            continue
+        
+        # Add flag to all LOCAL_CFLAGS lines
+        lines = content.split('\n')
+        changed = False
+        for i, line in enumerate(lines):
+            if 'LOCAL_CFLAGS' in line and ('+=' in line or ':=' in line):
+                if '-Wno-cast-function-type-strict' not in line:
+                    lines[i] = line.rstrip() + ' -Wno-cast-function-type-strict'
+                    changed = True
+        
+        if changed:
+            with open(path, 'w') as fh:
+                fh.write('\n'.join(lines))
+            print(f'Patched: {path}')
+        else:
+            print(f'No LOCAL_CFLAGS found in: {path}')
 
-print(f'Total files patched: {count}')
+# Also just delete hb-ft.cc if patching fails - SDL2_ttf will use fallback
+print('Done')
