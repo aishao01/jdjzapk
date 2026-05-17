@@ -35,24 +35,7 @@ jobs:
 
           # Patch hb-ft.cc to suppress clang cast-function-type-strict
           echo "=== Patching hb-ft.cc ==="
-          python3 << 'PYEOF'
-import os
-for root, dirs, files in os.walk(os.path.expanduser('~/.buildozer')):
-    for f in files:
-        if f == 'hb-ft.cc':
-            path = os.path.join(root, f)
-            with open(path, 'r') as fh:
-                content = fh.read()
-            if '#pragma clang diagnostic' not in content:
-                pragma = '#pragma clang diagnostic ignored "-Wcast-function-type-strict"\n'
-                content = pragma + content
-                with open(path, 'w') as fh:
-                    fh.write(content)
-                print(f'  Patched: {path}')
-            else:
-                print(f'  Already patched: {path}')
-PYEOF
-
+          python3 .github/scripts/patch_harfbuzz.py
           echo "=== Retrying build with patched harfbuzz ==="
           buildozer android debug
         env:
